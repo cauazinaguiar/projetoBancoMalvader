@@ -14,34 +14,26 @@ import java.time.format.DateTimeFormatter;
 
 public class UsuarioDAO {
 
-    /**
-     * Insere um novo usuário no banco de dados.
-     * @param usuario O objeto Usuario a ser inserido.
-     * @return O ID gerado para o novo usuário, ou -1 em caso de falha.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public int inserirUsuario(Usuario usuario) throws SQLException {
         String sql = "INSERT INTO usuario (nome, cpf, data_nascimento, telefone, tipo_usuario, senha_hash) VALUES (?, ?, ?, ?, ?, ?)";
         int idUsuarioGerado = -1;
 
-        // Tenta obter uma conexão. Usamos try-with-resources para garantir o fechamento.
         try (Connection conn = ConexaoBanco.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getCpf());
-            stmt.setString(3, usuario.getDataNascimento().format(DateTimeFormatter.ISO_DATE)); // Formata LocalDate para YYYY-MM-DD
+            stmt.setString(3, usuario.getDataNascimento().format(DateTimeFormatter.ISO_DATE)); 
             stmt.setString(4, usuario.getTelefone());
             stmt.setString(5, usuario.getTipoUsuario());
             stmt.setString(6, usuario.getSenhaHash());
 
-            int rowsAffected = stmt.executeUpdate(); // Executa a inserção
+            int rowsAffected = stmt.executeUpdate(); 
             if (rowsAffected > 0) {
-                // Obtém o ID gerado automaticamente (se a coluna for AUTO_INCREMENT)
                 try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         idUsuarioGerado = rs.getInt(1);
-                        usuario.setIdUsuario(idUsuarioGerado); // Atualiza o objeto Model com o ID
+                        usuario.setIdUsuario(idUsuarioGerado); 
                     }
                 }
             }
@@ -49,12 +41,6 @@ public class UsuarioDAO {
         return idUsuarioGerado;
     }
 
-    /**
-     * Verifica se um CPF já existe na tabela de usuários.
-     * @param cpf O CPF a ser verificado.
-     * @return True se o CPF existe, false caso contrário.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public boolean cpfExiste(String cpf) throws SQLException {
         String sql = "SELECT COUNT(*) FROM usuario WHERE cpf = ?";
         try (Connection conn = ConexaoBanco.getConnection();
@@ -69,13 +55,6 @@ public class UsuarioDAO {
         return false;
     }
 
-    /**
-     * Busca um usuário pelo CPF e tipo de usuário.
-     * @param cpf O CPF do usuário.
-     * @param tipoUsuario O tipo de usuário ("FUNCIONARIO" ou "CLIENTE").
-     * @return O objeto Usuario encontrado, ou null se não for encontrado.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public Usuario buscarUsuarioPorCpfETipo(String cpf, String tipoUsuario) throws SQLException {
         String sql = "SELECT id_usuario, nome, cpf, data_nascimento, telefone, tipo_usuario, senha_hash, otp_ativo, otp_expiracao FROM usuario WHERE cpf = ? AND tipo_usuario = ?";
         try (Connection conn = ConexaoBanco.getConnection();
@@ -99,13 +78,6 @@ public class UsuarioDAO {
         return null;
     }
 
-    /**
-     * Atualiza o OTP e sua expiração para um usuário.
-     * @param idUsuario O ID do usuário.
-     * @param otp O novo OTP.
-     * @param otpExpiracao A nova data/hora de expiração do OTP.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public void atualizarOtpUsuario(int idUsuario, String otp, LocalDateTime otpExpiracao) throws SQLException {
         String sql = "UPDATE usuario SET otp_ativo = ?, otp_expiracao = ? WHERE id_usuario = ?";
         try (Connection conn = ConexaoBanco.getConnection();
@@ -117,12 +89,6 @@ public class UsuarioDAO {
         }
     }
 
-    /**
-     * Busca um usuário pelo ID.
-     * @param idUsuario O ID do usuário.
-     * @return O objeto Usuario encontrado, ou null se não for encontrado.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public Usuario buscarUsuarioPorId(int idUsuario) throws SQLException {
         String sql = "SELECT id_usuario, nome, cpf, data_nascimento, telefone, tipo_usuario, senha_hash, otp_ativo, otp_expiracao FROM usuario WHERE id_usuario = ?";
         try (Connection conn = ConexaoBanco.getConnection();
@@ -144,5 +110,28 @@ public class UsuarioDAO {
             }
         }
         return null;
+    }
+    public void atualizarTelefone(int idUsuario, String novoTelefone, Connection conn) throws SQLException {
+        String sql = "UPDATE usuario SET telefone = ? WHERE id_usuario = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, novoTelefone);
+            stmt.setInt(2, idUsuario);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+               
+                throw new SQLException("Nenhum usuário encontrado ou telefone atualizado com ID: " + idUsuario);
+            }
+        }
+    }
+    public void atualizarSenha(int idUsuario, String novaSenhaHash, Connection conn) throws SQLException {
+        String sql = "UPDATE usuario SET senha_hash = ? WHERE id_usuario = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, novaSenhaHash);
+            stmt.setInt(2, idUsuario);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Nenhum usuário encontrado ou senha atualizada com ID: " + idUsuario);
+            }
+        }
     }
 }

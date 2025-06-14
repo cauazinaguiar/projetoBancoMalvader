@@ -74,14 +74,15 @@ public class ContaController {
      * @param perfilRiscoCI Perfil de risco para Conta Investimento.
      * @param valorMinimoCI Valor mínimo para Conta Investimento.
      * @param taxaRendimentoBaseCI Taxa de rendimento base para Conta Investimento.
+     * @param idFuncionarioResponsavel ID do funcionário que está realizando a operação (para auditoria).
      * @return True se a conta foi aberta com sucesso, false caso contrário.
      */
     public boolean abrirConta(String nome, String cpf, LocalDate dataNascimento, String telefone,
-                              String senha, String cep, String logradouro, int numeroCasa, String bairro, String cidade,
-                              String estado, String complemento, String codigoAgencia, String tipoConta,
-                              double taxaRendimentoCP, double limiteCC, LocalDate dataVencimentoCC,
-                              double taxaManutencaoCC, String perfilRiscoCI, double valorMinimoCI,
-                              double taxaRendimentoBaseCI, int idFuncionarioResponsavel) {
+                                String senha, String cep, String logradouro, int numeroCasa, String bairro, String cidade,
+                                String estado, String complemento, String codigoAgencia, String tipoConta,
+                                double taxaRendimentoCP, double limiteCC, LocalDate dataVencimentoCC,
+                                double taxaManutencaoCC, String perfilRiscoCI, double valorMinimoCI,
+                                double taxaRendimentoBaseCI, int idFuncionarioResponsavel) {
 
         // 1. Validações de entrada de dados (básicas, mais completas seriam na UI ou Models)
         if (nome.isEmpty() || !CpfValidator.isValidFormat(cpf) || dataNascimento == null || telefone.isEmpty() ||
@@ -111,7 +112,7 @@ public class ContaController {
                 return false;
             }
 
-            // 3. Buscar ou criar agência (para simplificar, assumimos que a agência já existe ou será criada manualmente)
+            // 3. Buscar ou criar agência (assumimos que a agência já existe)
             Agencia agencia = agenciaDAO.buscarAgenciaPorCodigo(codigoAgencia);
             if (agencia == null) {
                  JOptionPane.showMessageDialog(null, "Agência com código " + codigoAgencia + " não encontrada.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -126,24 +127,24 @@ public class ContaController {
             }
 
             // 5. Inserir Endereço para o novo usuário
-            Endereco novoEndereco = new Endereco(0, idUsuario, cep, logradouro, numeroCasa, bairro, cidade, estado, complemento);
+            Endereco novoEndereco = new Endereco(idUsuario, cep, logradouro, numeroCasa, bairro, cidade, estado, complemento); // Usar String.valueOf(numeroCasa) se numeroCasa for int
             int idEndereco = enderecoDAO.inserirEndereco(novoEndereco);
             if (idEndereco == -1) {
                 throw new SQLException("Falha ao inserir o endereço.");
             }
 
             // 6. Inserir Cliente para o novo usuário
-            Cliente novoCliente = new Cliente(0, idUsuario, 0.0); // Score inicial 0.0
+            Cliente novoCliente = new Cliente(idUsuario, 0.0); // Score inicial 0.0
             int idCliente = clienteDAO.inserirCliente(novoCliente);
             if (idCliente == -1) {
                 throw new SQLException("Falha ao inserir o cliente.");
             }
 
-            // 7. Gerar número da conta (Exemplo simples, o algoritmo de Luhn é mais complexo)
+            // 7. Gerar número da conta
             String numeroConta = gerarNumeroContaAleatorio(); // Implemente um gerador de número de conta real
 
             // 8. Inserir Conta principal
-            Conta novaConta = new Conta(0, numeroConta, agencia.getIdAgencia(), 0.0, tipoConta, idCliente, LocalDateTime.now(), "ATIVA");
+            Conta novaConta = new Conta(numeroConta, agencia.getIdAgencia(), 0.0, tipoConta, idCliente, LocalDateTime.now(), "ATIVA");
             int idConta = contaDAO.inserirConta(novaConta, conn); // Passa a conexão da transação
             if (idConta == -1) {
                 throw new SQLException("Falha ao inserir a conta principal.");
@@ -152,15 +153,15 @@ public class ContaController {
             // 9. Inserir Detalhes da Conta Específica
             switch (tipoConta) {
                 case "POUPANCA":
-                    ContaPoupanca cp = new ContaPoupanca(0, idConta, taxaRendimentoCP, null);
+                    ContaPoupanca cp = new ContaPoupanca(idConta, taxaRendimentoCP, null);
                     contaDAO.inserirContaPoupanca(cp, conn); // Passa a conexão da transação
                     break;
                 case "CORRENTE":
-                    ContaCorrente cc = new ContaCorrente(0, idConta, limiteCC, dataVencimentoCC, taxaManutencaoCC);
+                    ContaCorrente cc = new ContaCorrente(idConta, limiteCC, dataVencimentoCC, taxaManutencaoCC);
                     contaDAO.inserirContaCorrente(cc, conn); // Passa a conexão da transação
                     break;
                 case "INVESTIMENTO":
-                    ContaInvestimento ci = new ContaInvestimento(0, idConta, perfilRiscoCI, valorMinimoCI, taxaRendimentoBaseCI);
+                    ContaInvestimento ci = new ContaInvestimento(idConta, perfilRiscoCI, valorMinimoCI, taxaRendimentoBaseCI);
                     contaDAO.inserirContaInvestimento(ci, conn); // Passa a conexão da transação
                     break;
             }
@@ -190,6 +191,88 @@ public class ContaController {
             ConexaoBanco.closeConnection(conn); // Fecha a conexão
         }
     }
+
+    /**
+     * Atualiza o telefone, endereço e/ou senha de um cliente.
+     * Esta operação é uma transação para garantir atomicidade.
+     * @param idUsuarioCliente ID do usuário (cliente) cujos dados serão atualizados.
+     * @param novoTelefone Novo telefone. Pode ser null se não for para atualizar.
+     * @param novoEndereco Objeto Endereco com os novos dados de endereço. Pode ser null se não for para atualizar.
+     * @param novaSenhaTextoClaro Nova senha em texto claro. Será hasheada. Pode ser null se não for para atualizar.
+     * @param idFuncionarioResponsavel ID do funcionário que está realizando a operação (para auditoria).
+     * @return True se a atualização for bem-sucedida, false caso contrário.
+     */
+    public boolean atualizarDadosCliente(int idUsuarioCliente, String novoTelefone, Endereco novoEndereco, 
+                                          String novaSenhaTextoClaro, int idFuncionarioResponsavel) {
+        Connection conn = null;
+        String acaoAuditoria = "ALTERACAO_CLIENTE";
+        String detalhesAuditoria = "Alteração de dados para o usuário cliente ID: " + idUsuarioCliente;
+
+        try {
+            conn = ConexaoBanco.getConnection();
+            conn.setAutoCommit(false); // Inicia a transação
+
+            // 1. Atualizar Telefone (se fornecido)
+            if (novoTelefone != null && !novoTelefone.trim().isEmpty()) {
+                usuarioDAO.atualizarTelefone(idUsuarioCliente, novoTelefone.trim(), conn);
+                detalhesAuditoria += " - Telefone atualizado.";
+            }
+
+            // 2. Atualizar Endereço (se fornecido)
+            if (novoEndereco != null) {
+                // Antes de atualizar, precisamos ter o id_endereco
+                // Buscar o endereço atual do usuário
+                Endereco enderecoAtual = enderecoDAO.buscarEnderecoPorUsuarioId(idUsuarioCliente);
+                if (enderecoAtual != null) {
+                    novoEndereco.setIdEndereco(enderecoAtual.getIdEndereco()); // Define o ID para a atualização
+                    novoEndereco.setIdUsuario(idUsuarioCliente); // Garante que a FK está correta
+                    enderecoDAO.atualizarEndereco(novoEndereco, conn);
+                    detalhesAuditoria += " - Endereço atualizado.";
+                } else {
+                    // Se o endereço não existe, talvez seja uma inserção? Ou erro?
+                    // Por enquanto, lançamos um erro se for atualização e o endereço não for encontrado
+                    throw new SQLException("Endereço não encontrado para o usuário ID: " + idUsuarioCliente + ". Não foi possível atualizar.");
+                }
+            }
+
+            // 3. Atualizar Senha (se fornecida)
+            if (novaSenhaTextoClaro != null && !novaSenhaTextoClaro.trim().isEmpty()) {
+                // Validação de senha forte para a nova senha
+                if (novaSenhaTextoClaro.length() < 8 || !novaSenhaTextoClaro.matches(".*[A-Z].*") ||
+                    !novaSenhaTextoClaro.matches(".*\\d.*") || !novaSenhaTextoClaro.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
+                    throw new IllegalArgumentException("A nova senha deve ter pelo menos 8 caracteres, 1 letra maiúscula, 1 número e 1 caractere especial.");
+                }
+                String novaSenhaHash = PasswordHasher.hashPasswordMD5(novaSenhaTextoClaro);
+                usuarioDAO.atualizarSenha(idUsuarioCliente, novaSenhaHash, conn);
+                detalhesAuditoria += " - Senha atualizada.";
+            }
+
+            // 4. Registrar Auditoria
+            Auditoria auditoria = new Auditoria(idFuncionarioResponsavel, acaoAuditoria, LocalDateTime.now(), detalhesAuditoria);
+            auditoriaDAO.registrarAuditoria(auditoria);
+
+            conn.commit(); // Confirma a transação
+            JOptionPane.showMessageDialog(null, "Dados do cliente atualizados com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            return true;
+
+        } catch (SQLException | IllegalArgumentException e) { // Captura SQLException e IllegalArgumentException
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Desfaz tudo em caso de erro
+                    System.err.println("Rollback da transação de atualização de dados do cliente devido a erro: " + e.getMessage());
+                } catch (SQLException rollbackEx) {
+                    System.err.println("Erro ao fazer rollback: " + rollbackEx.getMessage());
+                }
+            }
+            // Mensagem de erro para o usuário
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar dados do cliente: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return false;
+        } finally {
+            ConexaoBanco.closeConnection(conn); // Fecha a conexão
+        }
+    }
+
 
     /**
      * Gera um número de conta aleatório simples.

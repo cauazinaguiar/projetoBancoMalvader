@@ -11,12 +11,6 @@ import java.sql.Statement;
 
 public class ClienteDAO {
 
-    /**
-     * Insere um novo cliente no banco de dados.
-     * @param cliente O objeto Cliente a ser inserido.
-     * @return O ID gerado para o novo cliente, ou -1 em caso de falha.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public int inserirCliente(Cliente cliente) throws SQLException {
         String sql = "INSERT INTO cliente (id_usuario, score_credito) VALUES (?, ?)";
         int idClienteGerado = -1;
@@ -25,7 +19,7 @@ public class ClienteDAO {
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, cliente.getIdUsuario());
-            stmt.setDouble(2, cliente.getScoreCredito()); // Score inicial geralmente 0
+            stmt.setDouble(2, cliente.getScoreCredito()); 
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
@@ -39,7 +33,38 @@ public class ClienteDAO {
         }
         return idClienteGerado;
     }
-
-    // Você pode adicionar métodos para buscar, atualizar e deletar clientes aqui.
-    // Ex: buscarClientePorUsuarioId, atualizarScoreCredito, etc.
+    public Cliente buscarClientePorId(int idCliente) throws SQLException {
+		String sql = "SELECT id_cliente, id_usuario, score_credito FROM cliente WHERE id_cliente = ?";
+		
+		try (Connection conn = ConexaoBanco.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)){
+			stmt.setInt(1, idCliente);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					int idUsuario = rs.getInt("id_usuario");
+					Double scoreCredito = rs.getDouble("score_credito");
+					
+					return new Cliente(idCliente, idUsuario, scoreCredito);
+				}
+			}
+		}
+		return null;
+	}
+    public Cliente buscarClientePorUsuarioId(int idUsuario) throws SQLException {
+		String sql = "SELECT id_cliente, id_usuario, score_credito FROM cliente WHERE id_usuario = ?";
+		
+		try (Connection conn = ConexaoBanco.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)){
+			stmt.setInt(1, idUsuario);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					int idCliente = rs.getInt("id_cliente");
+					Double scoreCredito = rs.getDouble("score_credito");
+					
+					return new Cliente(idCliente, idUsuario, scoreCredito);
+				}
+			}
+		}
+		return null;
+	}
 }

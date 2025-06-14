@@ -11,12 +11,6 @@ import java.sql.Statement;
 
 public class AgenciaDAO {
 
-    /**
-     * Insere uma nova agência no banco de dados.
-     * @param agencia O objeto Agencia a ser inserido.
-     * @return O ID gerado para a nova agência, ou -1 em caso de falha.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public int inserirAgencia(Agencia agencia) throws SQLException {
         String sql = "INSERT INTO agencia (nome, codigo_agencia, endereco_id) VALUES (?, ?, ?)";
         int idAgenciaGerado = -1;
@@ -41,12 +35,6 @@ public class AgenciaDAO {
         return idAgenciaGerado;
     }
 
-    /**
-     * Busca uma agência pelo código da agência.
-     * @param codigoAgencia O código da agência a ser buscada.
-     * @return O objeto Agencia encontrado, ou null se não for encontrada.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public Agencia buscarAgenciaPorCodigo(String codigoAgencia) throws SQLException {
         String sql = "SELECT id_agencia, nome, codigo_agencia, endereco_id FROM agencia WHERE codigo_agencia = ?";
         try (Connection conn = ConexaoBanco.getConnection();
@@ -64,12 +52,6 @@ public class AgenciaDAO {
         return null;
     }
 
-    /**
-     * Busca uma agência pelo ID.
-     * @param idAgencia O ID da agência a ser buscada.
-     * @return O objeto Agencia encontrado, ou null se não for encontrada.
-     * @throws SQLException Se ocorrer um erro no acesso ao banco de dados.
-     */
     public Agencia buscarAgenciaPorId(int idAgencia) throws SQLException {
         String sql = "SELECT id_agencia, nome, codigo_agencia, endereco_id FROM agencia WHERE id_agencia = ?";
         try (Connection conn = ConexaoBanco.getConnection();
