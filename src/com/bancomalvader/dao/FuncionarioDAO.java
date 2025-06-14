@@ -1,6 +1,7 @@
 package com.bancomalvader.dao;
 
 import com.bancomalvader.model.Funcionario;
+import com.bancomalvader.model.Transacao;
 import com.bancomalvader.util.ConexaoBanco;
 
 import java.sql.Connection;
@@ -9,6 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FuncionarioDAO {
 	
@@ -59,5 +63,66 @@ public class FuncionarioDAO {
 			}
 		}
 		return null;
+	}
+	public Funcionario buscarFuncionarioPorCodigo(String codigoFuncionario) throws SQLException {
+		String sql = "SELECT id_funcionario, id_usuario, codigo_funcionario, cargo, id_supervisor FROM funcionario WHERE codigo = ?";
+		
+		try (Connection conn = ConexaoBanco.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)){
+			stmt.setString(1, codigoFuncionario);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					int idFuncionario = rs.getInt("id_funcionario");
+					int idUsuario = rs.getInt("id_usuario");
+					String cargo = rs.getString("cargo");
+					Integer idSupervisor = (Integer) rs.getObject("id_supervisor");
+					
+					return new Funcionario(idFuncionario, idUsuario,codigoFuncionario, cargo, idSupervisor);
+				}
+			}
+		}
+		return null;
+	}
+	public Funcionario buscarFuncionarioPorUsuarioId(int idUsuario) throws SQLException {
+		String sql = "SELECT id_funcionario, id_usuario, codigo_funcionario, cargo, id_supervisor FROM funcionario WHERE id_usuario = ?";
+		
+		try (Connection conn = ConexaoBanco.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)){
+			stmt.setInt(1, idUsuario);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					int idFuncionario = rs.getInt("id_funcionario");
+					String codigoFuncionario = rs.getString("codigo_funcionario");
+					String cargo = rs.getString("cargo");
+					Integer idSupervisor = (Integer) rs.getObject("id_supervisor");
+					
+					return new Funcionario(idFuncionario, idUsuario,codigoFuncionario, cargo, idSupervisor);
+				}
+			}
+		}
+		return null;
+	}
+	public List<Funcionario> ListarTodosFuncionarios() throws SQLException {
+		String sql = "SELECT id_funcionario, id_usuario, codigo_funcionario, cargo, id_supervisor FROM funcionario";
+		List<Funcionario> todosFuncionarios = new ArrayList<>();
+		
+			try (Connection conn = ConexaoBanco.getConnection();
+					PreparedStatement stmt = conn.prepareStatement(sql)){
+			
+			try(ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					
+					int idFuncionario = rs.getInt("id_funcionario");
+					int idUsuario = rs.getInt("id_usuario");
+					String codigoFuncionario = rs.getString("codigo_funcionario");
+					String cargo = rs.getString("cargo");
+					Integer idSupervisor = (Integer) rs.getObject("id_supervisor");
+					
+					Funcionario func = new Funcionario(idFuncionario, idUsuario, codigoFuncionario, cargo, idSupervisor);
+					todosFuncionarios.add(func);
+				}
+			}
+		}
+		return todosFuncionarios;
 	}
 }

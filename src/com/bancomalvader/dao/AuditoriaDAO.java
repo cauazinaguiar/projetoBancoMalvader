@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.format.DateTimeFormatter; // Para formatar LocalDateTime
+import java.sql.Types;
 
 public class AuditoriaDAO {
 
@@ -25,7 +26,7 @@ public class AuditoriaDAO {
             if (auditoria.getIdUsuario() != null) {
                 stmt.setInt(1, auditoria.getIdUsuario());
             } else {
-                stmt.setNull(1, java.sql.Types.INTEGER); // Define como NULL se não houver ID de usuário
+                stmt.setNull(1, Types.INTEGER); // Define como NULL se não houver ID de usuário
             }
             stmt.setString(2, auditoria.getAcao());
             stmt.setTimestamp(3, java.sql.Timestamp.valueOf(auditoria.getDataHora())); // Converte LocalDateTime
