@@ -3,19 +3,17 @@ package com.bancomalvader.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-// Classe que representa a entidade 'usuario' do banco de dados
 public class Usuario {
     private int idUsuario;
     private String nome;
     private String cpf;
-    private LocalDate dataNascimento; // Usar LocalDate para datas sem hora
+    private LocalDate dataNascimento; 
     private String telefone;
-    private String tipoUsuario; // Ex: "FUNCIONARIO", "CLIENTE"
-    private String senhaHash;   // Hash da senha (MD5)
-    private String otpAtivo;    // OTP atual
-    private LocalDateTime otpExpiracao; // Data/hora de expiração do OTP
+    private String tipoUsuario; 
+    private String senhaHash;  
+    private String otpAtivo;   
+    private LocalDateTime otpExpiracao; 
 
-    // Construtor completo (para quando for carregar do banco)
     public Usuario(int idUsuario, String nome, String cpf, LocalDate dataNascimento,
                    String telefone, String tipoUsuario, String senhaHash,
                    String otpAtivo, LocalDateTime otpExpiracao) {
@@ -30,7 +28,6 @@ public class Usuario {
         this.otpExpiracao = otpExpiracao;
     }
 
-    // Construtor para novas instâncias (sem ID, OTP - que são gerados pelo banco ou sistema)
     public Usuario(String nome, String cpf, LocalDate dataNascimento,
                    String telefone, String tipoUsuario, String senhaHash) {
         this.nome = nome;
@@ -41,7 +38,6 @@ public class Usuario {
         this.senhaHash = senhaHash;
     }
 
-    // Getters e Setters
     public int getIdUsuario() {
         return idUsuario;
     }
@@ -123,7 +119,6 @@ public class Usuario {
                ", dataNascimento=" + dataNascimento +
                ", telefone='" + telefone + '\'' +
                ", tipoUsuario='" + tipoUsuario + '\'' +
-               // Evitar imprimir senhaHash em logs de produção por segurança
                ", otpAtivo='" + otpAtivo + '\'' +
                ", otpExpiracao=" + otpExpiracao +
                '}';

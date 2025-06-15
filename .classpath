@@ -1,90 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry excluding="lib/" kind="src" path="src"/>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/com.ibm.icu_76.1.0.jar" sourcepath="/home/vaio/.p2/pool/plugins/com.ibm.icu_76.1.0.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/jakarta.annotation-api_2.1.1.jar" sourcepath="/home/vaio/.p2/pool/plugins/jakarta.annotation-api_2.1.1.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.core.commands_3.12.300.v20241229-1638.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.core.commands_3.12.300.v20241229-1638.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.core.runtime_3.33.0.v20250206-0919.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.core.runtime_3.33.0.v20250206-0919.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.e4.ui.di_1.5.500.v20250105-1208.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.e4.ui.di_1.5.500.v20250105-1208.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.equinox.common_3.20.0.v20250129-1348.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.equinox.common_3.20.0.v20250129-1348.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.equinox.registry_3.12.300.v20250129-1129.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.equinox.registry_3.12.300.v20250129-1129.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.jface_3.36.0.v20250129-1243.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.jface_3.36.0.v20250129-1243.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.jface.text_3.27.0.v20250211-0938.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.jface.text_3.27.0.v20250211-0938.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.osgi_3.23.0.v20250228-0640.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.osgi_3.23.0.v20250228-0640.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.swt.gtk.linux.x86_64_3.129.0.v20250221-1734.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.swt.gtk.linux.x86_64_3.129.0.v20250221-1734.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.text_3.14.300.v20250119-1501.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.text_3.14.300.v20250119-1501.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.ui.forms_3.13.400.v20240905-1138.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.ui.forms_3.13.400.v20240905-1138.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.ui.workbench_3.135.0.v20250204-1142.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.ui.workbench_3.135.0.v20250204-1142.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/mysql-connector/usr/share/java/mysql-connector-j-9.3.0.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/vaio/commons-codec-1.18.0-bin/commons-codec-1.18.0/commons-codec-1.18.0.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/com.ibm.icu_76.1.0.jar" sourcepath="/home/vaio/.p2/pool/plugins/com.ibm.icu_76.1.0.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/jakarta.annotation-api_2.1.1.jar" sourcepath="/home/vaio/.p2/pool/plugins/jakarta.annotation-api_2.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.core.commands_3.12.300.v20241229-1638.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.core.commands_3.12.300.v20241229-1638.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.core.runtime_3.33.0.v20250206-0919.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.core.runtime_3.33.0.v20250206-0919.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.e4.ui.di_1.5.500.v20250105-1208.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.e4.ui.di_1.5.500.v20250105-1208.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.equinox.common_3.20.0.v20250129-1348.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.equinox.common_3.20.0.v20250129-1348.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.equinox.registry_3.12.300.v20250129-1129.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.equinox.registry_3.12.300.v20250129-1129.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.jface_3.36.0.v20250129-1243.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.jface_3.36.0.v20250129-1243.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.jface.text_3.27.0.v20250211-0938.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.jface.text_3.27.0.v20250211-0938.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.osgi_3.23.0.v20250228-0640.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.osgi_3.23.0.v20250228-0640.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.swt.gtk.linux.x86_64_3.129.0.v20250221-1734.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.swt.gtk.linux.x86_64_3.129.0.v20250221-1734.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.text_3.14.300.v20250119-1501.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.text_3.14.300.v20250119-1501.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.ui.forms_3.13.400.v20240905-1138.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.ui.forms_3.13.400.v20240905-1138.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/.p2/pool/plugins/org.eclipse.ui.workbench_3.135.0.v20250204-1142.jar" sourcepath="/home/vaio/.p2/pool/plugins/org.eclipse.ui.workbench_3.135.0.v20250204-1142.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/commons-codec-1.18.0-bin/commons-codec-1.18.0/commons-codec-1.18.0.jar"/>
+	<classpathentry kind="lib" path="/home/vaio/mysql-connector/usr/share/java/mysql-connector-j-9.3.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
